@@ -60,6 +60,7 @@ Not verified yet:
 - Nothing has been checked on a scaled (above 100%) display.
 - Start at sign-in now that the app requires admin: it still uses the HKCU Run key, and Windows can silently skip Run-key programs that need elevation. Jesse's UAC is set to elevate without prompting, which may let it through. Unverified until he signs out and back in. If it doesn't start, the usual fix is a Task Scheduler logon task with highest privileges; flag the antivirus angle to him before building that (an unsigned app creating an elevated logon task).
 - Combining a window that has a search-results tab is untested. It should be left alone and reported as skipped.
+- Forward button closes tabs (added 2026-11-20): only the app-to-action table and the hook installing were checked, by a throwaway console project that sends nothing. Nobody has pressed the real button with the tweak on. Never test it by injecting a Forward press or by sending the keys: it would close whatever Jesse has in front. While `Jesse.ahk` is still running it has the same hotkey; TrayTweaks' hook is installed later, so it should answer first, but that is unconfirmed.
 
 Not built yet:
 
@@ -70,7 +71,8 @@ Not built yet:
 State of the AutoHotkey hand-over (machine state, not in this repo):
 
 - Both scripts were started at sign-in by `init.bat` through a shortcut in his Startup folder. That shortcut was disabled on 2026-11-20 the Task Manager way (Startup apps > `init.bat - Shortcut.lnk` > Disabled), so he can re-enable it there. The scripts were left running for the current session.
-- Nothing from the scripts has been ported yet.
+- Ported so far: the Forward button (`XButton2`) hotkey, as the Forward button closes tabs tweak. Its per-app table was copied row for row, including rows that may be dead (QuickBooks POS, VbsEdit); Jesse has not said which to drop.
+- Not ported: the Back button (`XButton1`) hotkey. In the script it types a login into a window titled "Connect" (Jesse thinks of this as the Nortridge admin password fill, and remembered it as being on Forward), autofits columns in Excel, and otherwise sends Win+D. The login part waits for the password-macro design (text entered in Settings, DPAPI).
 
 Decisions waiting on Jesse:
 

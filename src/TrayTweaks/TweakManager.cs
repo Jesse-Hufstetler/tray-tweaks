@@ -8,6 +8,7 @@ public sealed class TweakManager
     public static readonly IReadOnlyList<Tweak> AllTweaks =
     [
         new CombineExplorerWindowsTweak(),
+        new ForwardButtonCloseTweak(),
         new KeepAwakeTweak(),
     ];
 

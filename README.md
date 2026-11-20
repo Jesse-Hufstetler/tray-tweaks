@@ -15,6 +15,7 @@ Click the tray icon to open Settings. Right-click it to run or toggle tweaks, op
 ## Tweaks
 
 - **Combine stacked Explorer windows** (action, Windows 11 22H2 or later): merges File Explorer windows that sit on exactly the same spot, for example in the same FancyZones zone, into one window with tabs. Explorer has no API for moving a tab, so each tab is reopened in the front window at the same folder and the emptied window is closed; a tab's back history and selection are not carried over. A window is only closed once all of its tabs are confirmed open in the front window.
+- **Forward button closes tabs** (toggle): the mouse's Forward side button sends Ctrl+W in browsers, editors and File Explorer, Ctrl+F4 in SSMS, Visual Studio and WebStorm, and Alt+F4 in every other app. In TeamViewer and Synergy the button is left alone. The per-app table is in `src\TrayTweaks\Tweaks\ForwardButtonCloseTweak.cs`. Works with any mouse that has a Forward button.
 - **Keep awake** (toggle): stops Windows from sleeping or turning off the screen.
 
 ## Mouse reference
@@ -23,7 +24,7 @@ The Mouse tab in Settings shows what each button on my Logitech G604 sends, on i
 
 ## Adding a tweak
 
-1. Add a class in `src\TrayTweaks\Tweaks` that inherits `ToggleTweak` (stays on or off; implement `Enable()` and `Disable()`) or `ActionTweak` (runs once per click; implement `Run()`), plus `Id` and `Name`. `Description` and `Glyph` (its icon) are optional. `KeepAwakeTweak.cs` and `CombineExplorerWindowsTweak.cs` are the examples.
+1. Add a class in `src\TrayTweaks\Tweaks` that inherits `ToggleTweak` (stays on or off; implement `Enable()` and `Disable()`) or `ActionTweak` (runs once per click; implement `Run()`), plus `Id` and `Name`. `Description` and `Glyph` (its icon) are optional. `KeepAwakeTweak.cs` and `CombineExplorerWindowsTweak.cs` are the examples. A tweak that reacts to the Back or Forward mouse button can use `Mouse\MouseHook.cs`, and `Input\Keyboard.cs` sends key presses.
 2. Add it to `AllTweaks` in `TweakManager.cs`.
 
 It then shows up in the tray menu and Settings. A toggle's on/off state is saved.
