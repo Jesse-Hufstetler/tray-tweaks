@@ -36,4 +36,4 @@ Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: 
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: none; ValueName: "TrayTweaks"; Flags: uninsdeletevalue dontcreatekey
 
 [Run]
-Filename: "{app}\TrayTweaks.exe"; Description: "Launch {#AppName}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\TrayTweaks.exe"; Description: "Launch {#AppName}"; Flags: nowait postinstall skipifsilent shellexec

@@ -4,13 +4,13 @@ A small Windows system tray utility that holds my personal Windows tweaks and au
 
 ## Build and run
 
-Needs the .NET 10 SDK.
+Needs the .NET 10 SDK. The app always runs as administrator (its manifest requires it), so run this from an elevated terminal; from a normal one it fails with "The requested operation requires elevation".
 
 ```powershell
 dotnet run --project src\TrayTweaks
 ```
 
-Right-click the tray icon to toggle tweaks, open Settings or exit. Double-click opens Settings.
+Click the tray icon to open Settings. Right-click it to run or toggle tweaks, open Settings or exit.
 
 ## Tweaks
 

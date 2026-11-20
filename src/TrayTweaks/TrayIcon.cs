@@ -31,10 +31,7 @@ public sealed class TrayIcon : IDisposable
         {
             if (e.Button == Forms.MouseButtons.Right)
                 ShowMenu();
-        };
-        _icon.MouseDoubleClick += (_, e) =>
-        {
-            if (e.Button == Forms.MouseButtons.Left)
+            else if (e.Button == Forms.MouseButtons.Left)
                 ShowSettings();
         };
 
