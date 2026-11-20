@@ -3,15 +3,20 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="TrayTweaks Settings"
         Icon="app.ico"
-        Width="480"
+        Width="560"
         SizeToContent="Height"
-        MaxHeight="720"
+        MaxHeight="760"
         ResizeMode="CanMinimize"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style x:Key="SectionHeader" TargetType="TextBlock">
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Margin" Value="0,16,0,8" />
+        </Style>
+        <Style x:Key="Secondary" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
         </Style>
         <Style x:Key="Card" TargetType="Border">
             <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
@@ -23,53 +28,123 @@
         </Style>
     </Window.Resources>
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel Margin="24,4,24,24">
-            <TextBlock Text="General" Style="{StaticResource SectionHeader}" />
-            <Border Style="{StaticResource Card}">
-                <CheckBox x:Name="StartWithWindows" Content="Start TrayTweaks when I sign in to Windows" />
-            </Border>
+    <TabControl x:Name="Tabs" Margin="12,8,12,12">
+        <TabItem Header="Tweaks">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="12,0,12,12">
+                    <TextBlock Text="General" Style="{StaticResource SectionHeader}" />
+                    <Border Style="{StaticResource Card}">
+                        <CheckBox x:Name="StartWithWindows" Content="Start TrayTweaks when I sign in to Windows" />
+                    </Border>
 
-            <TextBlock Text="Tweaks" Style="{StaticResource SectionHeader}" />
-            <ItemsControl x:Name="TweakList">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border Style="{StaticResource Card}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock Text="{Binding Glyph}"
-                                           FontFamily="{StaticResource IconFont}"
-                                           FontSize="20"
-                                           VerticalAlignment="Center"
-                                           Margin="0,0,16,0" />
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" />
-                                    <TextBlock Text="{Binding Description}"
-                                               TextWrapping="Wrap"
-                                               FontSize="12"
-                                               Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
-                                </StackPanel>
-                                <CheckBox Grid.Column="2"
-                                          IsChecked="{Binding IsEnabled}"
-                                          Visibility="{Binding ToggleVisibility}"
-                                          MinWidth="0"
-                                          VerticalAlignment="Center"
-                                          Margin="16,0,0,0" />
-                                <Button Grid.Column="2"
-                                        Content="Run"
-                                        Click="RunAction_Click"
-                                        Visibility="{Binding ActionVisibility}"
-                                        VerticalAlignment="Center"
-                                        Margin="16,0,0,0" />
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-        </StackPanel>
-    </ScrollViewer>
+                    <TextBlock Text="Tweaks" Style="{StaticResource SectionHeader}" />
+                    <ItemsControl x:Name="TweakList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Card}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Glyph}"
+                                                   FontFamily="{StaticResource IconFont}"
+                                                   FontSize="20"
+                                                   VerticalAlignment="Center"
+                                                   Margin="0,0,16,0" />
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" />
+                                            <TextBlock Text="{Binding Description}" Style="{StaticResource Secondary}" />
+                                        </StackPanel>
+                                        <CheckBox Grid.Column="2"
+                                                  IsChecked="{Binding IsEnabled}"
+                                                  Visibility="{Binding ToggleVisibility}"
+                                                  MinWidth="0"
+                                                  VerticalAlignment="Center"
+                                                  Margin="16,0,0,0" />
+                                        <Button Grid.Column="2"
+                                                Content="Run"
+                                                Click="RunAction_Click"
+                                                Visibility="{Binding ActionVisibility}"
+                                                VerticalAlignment="Center"
+                                                Margin="16,0,0,0" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+
+        <TabItem Header="Mouse">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="12,0,12,12">
+                    <TextBlock Text="Logitech G604" Style="{StaticResource SectionHeader}" />
+                    <TextBlock Style="{StaticResource Secondary}"
+                               Text="What each button sends, and what it sends while G-Shift is held. Read from the mouse's &quot;Hybrid MF&quot; profile on 20 Nov 2026; remapping the mouse does not update this page." />
+
+                    <TextBlock Text="Thumb buttons" Style="{StaticResource SectionHeader}" />
+                    <TextBlock Style="{StaticResource Secondary}" Margin="0,0,0,8"
+                               Text="As seen from the left side: front of the mouse on the left, rear on the right." />
+                    <ItemsControl x:Name="ThumbGrid" Margin="0,0,-4,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Card}" Margin="0,0,4,4" Padding="12,10">
+                                    <StackPanel>
+                                        <TextBlock Text="{Binding Label}" Style="{StaticResource Secondary}" />
+                                        <TextBlock Text="{Binding Sends}" FontSize="16" FontWeight="SemiBold" Margin="0,2,0,6" />
+                                        <TextBlock Text="With G-Shift" Style="{StaticResource Secondary}" FontSize="11" />
+                                        <TextBlock Text="{Binding ShiftedText}" TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Other buttons" Style="{StaticResource SectionHeader}" />
+                    <Grid Margin="17,0,17,4">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="4*" />
+                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="3*" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="Button" Style="{StaticResource Secondary}" />
+                        <TextBlock Grid.Column="1" Text="Sends" Style="{StaticResource Secondary}" />
+                        <TextBlock Grid.Column="2" Text="With G-Shift" Style="{StaticResource Secondary}" />
+                    </Grid>
+                    <ItemsControl x:Name="OtherButtons">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Card}" Padding="16,8" Margin="0,0,0,2">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="4*" />
+                                            <ColumnDefinition Width="3*" />
+                                            <ColumnDefinition Width="3*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Label}" />
+                                        <TextBlock Grid.Column="1" Text="{Binding Sends}" />
+                                        <TextBlock Grid.Column="2" Text="{Binding Shifted}" />
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="Other mice" Style="{StaticResource SectionHeader}" />
+                    <Border Style="{StaticResource Card}">
+                        <TextBlock TextWrapping="Wrap"
+                                   Text="A mouse with two side buttons sends Back and Forward. On the G604 those are both on G6: Forward on its own, Back with G-Shift." />
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+        </TabItem>
+    </TabControl>
 </Window>

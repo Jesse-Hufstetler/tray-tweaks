@@ -14,6 +14,8 @@ public partial class SettingsWindow : Window
 
         var rows = TweakManager.AllTweaks.Select(tweak => new TweakRow(tweak, tweaks)).ToList();
         TweakList.ItemsSource = rows;
+        ThumbGrid.ItemsSource = Mouse.G604Map.ThumbGrid;
+        OtherButtons.ItemsSource = Mouse.G604Map.OtherButtons;
 
         // Keeps the checkboxes right when a tweak is toggled from the tray menu.
         void Refresh() => rows.ForEach(row => row.Refresh());
