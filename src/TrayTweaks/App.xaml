@@ -1,0 +1,10 @@
+<Application x:Class="TrayTweaks.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             ShutdownMode="OnExplicitShutdown"
+             ThemeMode="System">
+    <Application.Resources>
+        <!-- Windows 11 has Segoe Fluent Icons; Windows 10 falls back to MDL2. Use glyphs that exist in both. -->
+        <FontFamily x:Key="IconFont">Segoe Fluent Icons, Segoe MDL2 Assets</FontFamily>
+    </Application.Resources>
+</Application>

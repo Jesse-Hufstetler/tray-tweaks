@@ -3,16 +3,22 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms is referenced only for NotifyIcon (WPF has no tray icon of its own). -->
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationHighDpiMode>PerMonitorV2</ApplicationHighDpiMode>
     <ApplicationIcon>app.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- WFO0003 wants DPI set the WinForms way; this is a WPF app, so the manifest is the right place. -->
+    <NoWarn>$(NoWarn);WFO0003</NoWarn>
     <Version>0.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="app.ico" LogicalName="app.ico" />
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <Resource Include="app.ico" />
   </ItemGroup>
 
 </Project>
