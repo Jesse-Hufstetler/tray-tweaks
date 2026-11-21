@@ -10,7 +10,18 @@ public partial class SettingsWindow : Window
         InitializeComponent();
 
         StartWithWindows.IsChecked = StartupRegistration.IsEnabled;
-        StartWithWindows.Click += (_, _) => StartupRegistration.SetEnabled(StartWithWindows.IsChecked == true);
+        StartWithWindows.Click += (_, _) =>
+        {
+            try
+            {
+                StartupRegistration.SetEnabled(StartWithWindows.IsChecked == true);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Start at sign-in could not be changed", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            StartWithWindows.IsChecked = StartupRegistration.IsEnabled;
+        };
 
         var rows = TweakManager.AllTweaks.Select(tweak => new TweakRow(tweak, tweaks)).ToList();
         TweakList.ItemsSource = rows;

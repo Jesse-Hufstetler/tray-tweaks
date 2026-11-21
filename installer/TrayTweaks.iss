@@ -21,8 +21,8 @@ SolidCompression=yes
 WizardStyle=modern
 CloseApplications=yes
 
-[Tasks]
-Name: "startup"; Description: "Start {#AppName} when I sign in to Windows"
+; No "start at sign-in" option here: the app needs admin, so that is a scheduled task the app
+; creates itself from Settings (this installer runs without admin and cannot).
 
 [Files]
 Source: "..\publish\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
@@ -31,8 +31,7 @@ Source: "..\publish\*"; DestDir: "{app}"; Flags: recursesubdirs ignoreversion
 Name: "{group}\{#AppName}"; Filename: "{app}\TrayTweaks.exe"
 
 [Registry]
-Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: string; ValueName: "TrayTweaks"; ValueData: """{app}\TrayTweaks.exe"""; Tasks: startup
-; Always clean the Run value on uninstall, even if it was turned on later from Settings.
+; Versions up to 0.1.0 used a Run value for start at sign-in; clean it up on uninstall.
 Root: HKCU; Subkey: "Software\Microsoft\Windows\CurrentVersion\Run"; ValueType: none; ValueName: "TrayTweaks"; Flags: uninsdeletevalue dontcreatekey
 
 [Run]

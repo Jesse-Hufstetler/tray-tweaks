@@ -9,6 +9,7 @@ public sealed class TweakManager
     [
         new CombineExplorerWindowsTweak(),
         new ForwardButtonCloseTweak(),
+        new KeepOutlookRunningTweak(),
         new KeepAwakeTweak(),
     ];
 
