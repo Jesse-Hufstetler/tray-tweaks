@@ -58,7 +58,7 @@ Not verified yet:
 - In Settings, nobody has confirmed that the checkboxes stay in sync when a tweak is toggled from the tray menu. (The layout of both tabs was checked in light and dark mode on 2026-11-20 by off-screen render.)
 - Nothing has been run on Windows 10: the Fluent theme's look, the MDL2 icon fallback, and the "needs Windows 11" message from the combine action.
 - Nothing has been checked on a scaled (above 100%) display.
-- Start at sign-in was rebuilt on 2026-11-21 as a Task Scheduler logon task (`StartupRegistration.cs`, task name `TrayTweaks`, highest privileges), after the HKCU Run key proved not to work: on that day's restart Windows tried the Run entry and started nothing (Shell-Core event log: "Finished execution of command 'TrayTweaks.exe' (PID 0)"), because the app needs elevation. Jesse approved the scheduled task. Only the task definition has been checked, with Task Scheduler's validate-only flag from an elevated throwaway project; the task has never been registered. Still to confirm: ticking the Settings checkbox creates it, and the app then starts at his next sign-in. Don't register test tasks from a throwaway exe: an unsigned exe in Temp creating an elevated logon task is exactly what antivirus watches for.
+- Start at sign-in was rebuilt on 2026-11-21 as a Task Scheduler logon task (`StartupRegistration.cs`, task name `TrayTweaks`, highest privileges), after the HKCU Run key proved not to work: on that day's restart Windows tried the Run entry and started nothing (Shell-Core event log: "Finished execution of command 'TrayTweaks.exe' (PID 0)"), because the app needs elevation. Jesse approved the scheduled task. Jesse ticked the Settings checkbox that day and the task was read back afterwards: it exists, runs with highest privileges at his sign-in and points at the Debug build's exe, and the old Run value is gone. Still to confirm: the app actually starts at his next sign-in. Don't register test tasks from a throwaway exe: an unsigned exe in Temp creating an elevated logon task is exactly what antivirus watches for.
 - Combining a window that has a search-results tab is untested. It should be left alone and reported as skipped.
 - Forward button closes tabs (added 2026-11-20): only the app-to-action table and the hook installing were checked, by a throwaway console project that sends nothing. Nobody has pressed the real button with the tweak on. Never test it by injecting a Forward press or by sending the keys: it would close whatever Jesse has in front. While `Jesse.ahk` is still running it has the same hotkey; TrayTweaks' hook is installed later, so it should answer first, but that is unconfirmed.
 
@@ -79,5 +79,8 @@ State of the AutoHotkey hand-over (machine state, not in this repo):
 
 Decisions waiting on Jesse:
 
-- Keep awake was added as an example tweak. He has not said whether to keep it.
 - The name TrayTweaks is a working name.
+
+Removed, may come back:
+
+- The Keep awake example tweak was removed on 2026-11-21: Jesse already has other apps for that. To bring it back, restore `src/TrayTweaks/Tweaks/KeepAwakeTweak.cs` from git history (last present in commit e400274) and add it to `AllTweaks`.

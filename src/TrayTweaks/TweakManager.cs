@@ -10,7 +10,6 @@ public sealed class TweakManager
         new CombineExplorerWindowsTweak(),
         new ForwardButtonCloseTweak(),
         new KeepOutlookRunningTweak(),
-        new KeepAwakeTweak(),
     ];
 
     readonly AppSettings _settings = AppSettings.Load();
