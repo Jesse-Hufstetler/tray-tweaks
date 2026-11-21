@@ -8,6 +8,7 @@ public partial class SettingsWindow : Window
     public SettingsWindow(TweakManager tweaks)
     {
         InitializeComponent();
+        WindowBackdrop.UseGlass(this);
 
         StartWithWindows.IsChecked = StartupRegistration.IsEnabled;
         StartWithWindows.Click += (_, _) =>

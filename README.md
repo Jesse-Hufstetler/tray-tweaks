@@ -14,7 +14,7 @@ Click the tray icon to open Settings. Right-click it to run or toggle tweaks, op
 
 ## Tweaks
 
-- **Combine stacked Explorer windows** (action, Windows 11 22H2 or later): merges File Explorer windows that sit on exactly the same spot, for example in the same FancyZones zone, into one window with tabs. Explorer has no API for moving a tab, so each tab is reopened in the front window at the same folder and the emptied window is closed; a tab's back history and selection are not carried over. A window is only closed once all of its tabs are confirmed open in the front window.
+- **Combine stacked Explorer windows** (action, Windows 11 22H2 or later): merges File Explorer windows that sit on exactly the same spot, for example in the same FancyZones zone, into one window with tabs. Explorer has no API for moving a tab, so each tab is reopened in the front window at the same folder and the emptied window is closed; a tab's back history and selection are not carried over. A window is only closed once all of its tabs are confirmed open in the front window. It works silently; a notification appears only if a window had to be left alone.
 - **Forward button closes tabs** (toggle): the mouse's Forward side button sends Ctrl+W in browsers, editors and File Explorer, Ctrl+F4 in SSMS, Visual Studio and WebStorm, and Alt+F4 in every other app. In TeamViewer and Synergy the button is left alone. The per-app table is in `src\TrayTweaks\Tweaks\ForwardButtonCloseTweak.cs`. Works with any mouse that has a Forward button.
 - **Keep Outlook running** (toggle): checks every 30 seconds and starts classic Outlook when it isn't running. Outlook is started without administrator rights, through Explorer, even though TrayTweaks itself runs as administrator. Refuses to turn on where Outlook isn't installed.
 
@@ -32,6 +32,7 @@ It then shows up in the tray menu and Settings. A toggle's on/off state is saved
 ## Settings
 
 - On/off state: `%AppData%\TrayTweaks\settings.json`
+- The Settings window's background is blurred glass on Windows 11 22H2 or later. The blur relies on an undocumented Windows call, so a Windows update could turn it back into a plain background.
 - Start at sign-in: a Task Scheduler task named `TrayTweaks` (at sign-in of the current user, run with highest privileges). A Run-key entry doesn't work here, because Windows skips sign-in programs that need elevation. The task points at the exe that was running when the box was ticked; untick and tick again after moving the app.
 
 ## Installer
