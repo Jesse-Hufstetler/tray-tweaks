@@ -5,9 +5,11 @@ namespace TrayTweaks.Input;
 /// <summary>Sends key presses to whichever window has the focus.</summary>
 public static class Keyboard
 {
+    public const ushort Tab = 0x09;
     public const ushort Enter = 0x0D;
     public const ushort Control = 0x11;
     public const ushort Alt = 0x12;
+    public const ushort Home = 0x24;
     public const ushort F4 = 0x73;
 
     public static ushort Letter(char letter) => char.ToUpperInvariant(letter);
@@ -24,6 +26,33 @@ public static class Keyboard
         SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<INPUT>());
     }
 
+    /// <summary>Presses and releases the keys one after another, with a short pause so menus keep up.</summary>
+    public static void Type(params ushort[] keys)
+    {
+        foreach (var key in keys)
+        {
+            Chord(key);
+            Thread.Sleep(30);
+        }
+    }
+
+    /// <summary>Types text as characters, so it does not depend on the keyboard layout.</summary>
+    public static void TypeText(string text)
+    {
+        foreach (var character in text)
+        {
+            INPUT[] inputs = [Character(character, up: false), Character(character, up: true)];
+            SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<INPUT>());
+            Thread.Sleep(10);
+        }
+    }
+
+    static INPUT Character(char character, bool up) => new()
+    {
+        type = INPUT_KEYBOARD,
+        u = new() { ki = new() { wScan = character, dwFlags = KEYEVENTF_UNICODE | (up ? KEYEVENTF_KEYUP : 0) } },
+    };
+
     static INPUT Key(ushort key, bool up) => new()
     {
         type = INPUT_KEYBOARD,
@@ -32,6 +61,7 @@ public static class Keyboard
 
     const uint INPUT_KEYBOARD = 1;
     const uint KEYEVENTF_KEYUP = 0x0002;
+    const uint KEYEVENTF_UNICODE = 0x0004;
 
     [StructLayout(LayoutKind.Sequential)]
     struct INPUT

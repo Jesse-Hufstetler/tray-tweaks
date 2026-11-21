@@ -32,7 +32,18 @@ public static class ForegroundApp
         }
     }
 
+    /// <summary>The focused window's title, or "" when there is none.</summary>
+    public static string WindowTitle()
+    {
+        var window = GetForegroundWindow();
+        var title = new StringBuilder(512);
+        return window != IntPtr.Zero && GetWindowText(window, title, title.Capacity) > 0 ? title.ToString() : "";
+    }
+
     const uint PROCESS_QUERY_LIMITED_INFORMATION = 0x1000;
+
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int maxCount);
 
     [DllImport("user32.dll")]
     static extern IntPtr GetForegroundWindow();

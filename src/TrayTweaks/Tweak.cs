@@ -18,6 +18,12 @@ public abstract class Tweak
 /// <summary>Something that stays on or off. Its state is saved and restored at startup.</summary>
 public abstract class ToggleTweak : Tweak
 {
+    /// <summary>
+    /// Runs an action tweak the way a click on it would (own thread, result notification).
+    /// Set by <see cref="TweakManager"/>; call it on the UI thread.
+    /// </summary>
+    public Action<ActionTweak>? RunAction { get; set; }
+
     // Both run on the UI thread, at startup/exit and when toggled.
     public abstract void Enable();
     public abstract void Disable();

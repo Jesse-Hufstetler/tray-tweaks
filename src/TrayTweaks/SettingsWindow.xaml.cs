@@ -1,5 +1,7 @@
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
+using TrayTweaks.Secrets;
 
 namespace TrayTweaks;
 
@@ -28,6 +30,7 @@ public partial class SettingsWindow : Window
         TweakList.ItemsSource = rows;
         ThumbGrid.ItemsSource = Mouse.G604Map.ThumbGrid;
         OtherButtons.ItemsSource = Mouse.G604Map.OtherButtons;
+        SecretList.ItemsSource = SecretStore.Slots.Select(slot => new SecretRow(slot)).ToList();
 
         // Keeps the checkboxes right when a tweak is toggled from the tray menu.
         void Refresh() => rows.ForEach(row => row.Refresh());
@@ -37,6 +40,40 @@ public partial class SettingsWindow : Window
 
     void RunAction_Click(object sender, RoutedEventArgs e) =>
         ((TweakRow)((FrameworkElement)sender).DataContext).Run();
+
+    void SaveSecret_Click(object sender, RoutedEventArgs e)
+    {
+        var buttons = (Panel)((FrameworkElement)sender).Parent;
+        var box = buttons.Children.OfType<PasswordBox>().Single();
+        if (box.Password.Length == 0)
+            return;
+        ((SecretRow)buttons.DataContext).Save(box.Password);
+        box.Clear();
+    }
+
+    void RemoveSecret_Click(object sender, RoutedEventArgs e) =>
+        ((SecretRow)((FrameworkElement)sender).DataContext).Remove();
+}
+
+public sealed class SecretRow(SecretSlot slot) : INotifyPropertyChanged
+{
+    public string Name => slot.Name;
+    public string Description => slot.Description;
+    public string Status => SecretStore.Default.Has(slot.Id) ? "Saved" : "Not set";
+
+    public void Save(string value)
+    {
+        SecretStore.Default.Set(slot.Id, value);
+        PropertyChanged?.Invoke(this, new(nameof(Status)));
+    }
+
+    public void Remove()
+    {
+        SecretStore.Default.Remove(slot.Id);
+        PropertyChanged?.Invoke(this, new(nameof(Status)));
+    }
+
+    public event PropertyChangedEventHandler? PropertyChanged;
 }
 
 public sealed class TweakRow(Tweak tweak, TweakManager tweaks) : INotifyPropertyChanged

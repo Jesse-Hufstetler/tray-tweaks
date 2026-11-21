@@ -6,8 +6,10 @@ namespace TrayTweaks.Tweaks;
 
 /// <summary>
 /// Merges File Explorer windows that sit on exactly the same screen rectangle into one window with tabs.
-/// Explorer has no API for moving a tab, so each tab is reopened in the front window at the same folder
-/// (back history and selection are not carried over) and the emptied window is closed.
+/// Explorer has no API for moving a tab, so each tab is reopened in the surviving window at the same
+/// folder (back history and selection are not carried over) and the emptied window is closed.
+/// The window at the back of a stack survives and the others are added to it from back to front, so
+/// tabs run left to right in back-to-front order: the frontmost window's tabs end up rightmost.
 /// </summary>
 static class ExplorerTabCombiner
 {
@@ -21,6 +23,9 @@ static class ExplorerTabCombiner
     // Undocumented: the command Explorer's own "new tab" button sends to the tab window.
     const int NewTabCommand = 0xA21B;
     const int DWMWA_CLOAKED = 14;
+    const uint SWP_NOSIZE = 0x0001;
+    const uint SWP_NOMOVE = 0x0002;
+    const uint SWP_NOACTIVATE = 0x0010;
     static readonly TimeSpan Timeout = TimeSpan.FromSeconds(5);
 
     /// <summary>Call from an STA thread. <paramref name="include"/> can limit which windows are considered.</summary>
@@ -38,14 +43,17 @@ static class ExplorerTabCombiner
         int closed = 0, moved = 0, skipped = 0;
         foreach (var stack in windows.GroupBy(window => RectOf(window.Key)).Where(stack => stack.Count() > 1))
         {
-            var frontToBack = stack.OrderBy(window => zOrder.IndexOf(window.Key)).ToList();
-            var target = frontToBack[0].Key;
-            foreach (var source in frontToBack.Skip(1))
+            var backToFront = stack.OrderByDescending(window => zOrder.IndexOf(window.Key)).ToList();
+            var target = backToFront[0].Key;
+            foreach (var source in backToFront.Skip(1))
             {
                 var paths = source.Select(tab => tab.Path).ToList();
                 // Only close a window once every one of its tabs is confirmed open in the target.
                 if (paths.All(path => path is not null) && paths.All(path => OpenTab(target, path!)))
                 {
+                    // Slip the target in right behind the window it just absorbed, so the combined
+                    // window ends up where the front of the stack was instead of staying at the back.
+                    SetWindowPos(target, source.Key, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE | SWP_NOACTIVATE);
                     CloseWindow(source.Key);
                     closed++;
                     moved += paths.Count;
@@ -275,6 +283,9 @@ static class ExplorerTabCombiner
 
     [DllImport("user32.dll")]
     static extern bool PostMessage(IntPtr window, uint message, IntPtr wParam, IntPtr lParam);
+
+    [DllImport("user32.dll")]
+    static extern bool SetWindowPos(IntPtr window, IntPtr insertAfter, int x, int y, int width, int height, uint flags);
 
     [DllImport("dwmapi.dll")]
     static extern int DwmGetWindowAttribute(IntPtr window, int attribute, out int value, int size);

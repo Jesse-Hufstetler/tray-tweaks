@@ -5,10 +5,13 @@ namespace TrayTweaks;
 
 public sealed class TweakManager
 {
+    static readonly CombineExplorerWindowsTweak CombineExplorerWindows = new();
+
     public static readonly IReadOnlyList<Tweak> AllTweaks =
     [
-        new CombineExplorerWindowsTweak(),
+        CombineExplorerWindows,
         new ForwardButtonCloseTweak(),
+        new BackButtonTweak(CombineExplorerWindows),
         new KeepOutlookRunningTweak(),
     ];
 
@@ -25,6 +28,8 @@ public sealed class TweakManager
 
     public void StartEnabledTweaks()
     {
+        foreach (var tweak in Toggles)
+            tweak.RunAction = Run;
         foreach (var tweak in Toggles.Where(IsEnabled))
             Try(tweak, tweak.Enable);
     }
