@@ -12,6 +12,9 @@ public sealed class KeepOutlookRunningTweak : ToggleTweak
 {
     static readonly TimeSpan Interval = TimeSpan.FromSeconds(30);
 
+    // Wanted on the work PC only.
+    public override bool OnByDefault => false;
+
     ManualResetEvent? _stop;
 
     public override string Id => "keep-outlook-running";

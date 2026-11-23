@@ -25,7 +25,7 @@ public sealed class TweakManager
 
     static IEnumerable<ToggleTweak> Toggles => AllTweaks.OfType<ToggleTweak>();
 
-    public bool IsEnabled(ToggleTweak tweak) => _settings.EnabledTweaks.Contains(tweak.Id);
+    public bool IsEnabled(ToggleTweak tweak) => _settings.IsEnabled(tweak);
 
     public void StartEnabledTweaks()
     {
@@ -33,6 +33,7 @@ public sealed class TweakManager
             tweak.RunAction = Run;
         foreach (var tweak in Toggles.Where(IsEnabled))
             Try(tweak, tweak.Enable);
+        AppLog.Write("Tweaks on: " + string.Join(", ", Toggles.Where(IsEnabled).Select(tweak => tweak.Id)));
     }
 
     public void StopAll()
@@ -49,10 +50,7 @@ public sealed class TweakManager
         if (!Try(tweak, enabled ? tweak.Enable : tweak.Disable) && enabled)
             return;
 
-        if (enabled)
-            _settings.EnabledTweaks.Add(tweak.Id);
-        else
-            _settings.EnabledTweaks.Remove(tweak.Id);
+        _settings.Tweaks[tweak.Id] = enabled;
         _settings.Save();
         Changed?.Invoke();
     }

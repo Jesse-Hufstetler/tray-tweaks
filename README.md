@@ -18,7 +18,7 @@ Click the tray icon to open Settings. Right-click it to run or toggle tweaks, op
 - **Forward button closes tabs** (toggle): the mouse's Forward side button sends Ctrl+W in browsers, editors and File Explorer, Ctrl+F4 in SSMS, Visual Studio and WebStorm, and Alt+F4 in every other app. In TeamViewer and Synergy the button is left alone. The per-app table is in `src\TrayTweaks\Tweaks\ForwardButtonCloseTweak.cs`. Works with any mouse that has a Forward button.
 - **Back button combines Explorer windows** (toggle): the mouse's Back side button runs Combine stacked Explorer windows, whatever app is in front. In Excel it instead selects everything, autofits every row and column, and goes to the first cell. In a window with "Connect" in its title it fills in a login: Tab, the text saved on the Passwords tab, then Enter three times (with nothing saved, the button is left alone there). Works with any mouse that has a Back button.
 - **Password keys** (toggle): keys that type a password saved on the Passwords tab. So far that is F19, which my mouse sends for G-Shift + G8. The key is claimed with Windows' hotkey registration, not a keyboard hook, so the app never sees any other key. The table is in `src\TrayTweaks\Tweaks\PasswordKeysTweak.cs`.
-- **Keep Outlook running** (toggle): checks every 30 seconds and starts classic Outlook when it isn't running. Outlook is started without administrator rights, through Explorer, even though TrayTweaks itself runs as administrator. Refuses to turn on where Outlook isn't installed.
+- **Keep Outlook running** (toggle, off by default): checks every 30 seconds and starts classic Outlook when it isn't running. Outlook is started without administrator rights, through Explorer, even though TrayTweaks itself runs as administrator. Refuses to turn on where Outlook isn't installed.
 
 ## Mouse reference
 
@@ -29,11 +29,11 @@ The Mouse tab in Settings shows what each button on my Logitech G604 sends, on i
 1. Add a class in `src\TrayTweaks\Tweaks` that inherits `ToggleTweak` (stays on or off; implement `Enable()` and `Disable()`) or `ActionTweak` (runs once per click; implement `Run()`), plus `Id` and `Name`. `Description` and `Glyph` (its icon) are optional. `KeepOutlookRunningTweak.cs` and `CombineExplorerWindowsTweak.cs` are the examples. A tweak that reacts to the Back or Forward mouse button can use `Mouse\MouseHook.cs`, and `Input\Keyboard.cs` sends key presses. Anything a tweak launches would run as administrator; use `Input\UnelevatedLauncher.cs` to start a program at the normal level instead.
 2. Add it to `AllTweaks` in `TweakManager.cs`.
 
-It then shows up in the tray menu and Settings. A toggle's on/off state is saved.
+It then shows up in the tray menu and Settings. Toggle tweaks are on by default, new ones included; only Keep Outlook running starts off. To make another one start off, override `OnByDefault`. `settings.json` records only the tweaks you have switched on or off yourself.
 
 ## Settings
 
-- On/off state: `%AppData%\TrayTweaks\settings.json`
+- Tweaks you have switched on or off: `%AppData%\TrayTweaks\settings.json`
 - Log: `%LocalAppData%\TrayTweaks\log.txt`. The app notes each start there (who it runs as, whether each saved password can be read) and anything that would otherwise fail silently. It never contains a password.
 - Passwords: text the app types for you is entered on the Passwords tab, where a saved value shows as dots until you click Show. It is kept in `%LocalAppData%\TrayTweaks\secrets.json`, each entry encrypted with Windows DPAPI for the current user. It is never in the source or in `settings.json`, and the file is useless on another PC or account. To add one, define a `SecretSlot` and list it in `SecretStore.Slots`.
 - The Settings window's background is blurred glass on Windows 11 22H2 or later. The blur relies on an undocumented Windows call, so a Windows update could turn it back into a plain background.

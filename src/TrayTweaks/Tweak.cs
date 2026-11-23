@@ -19,6 +19,12 @@ public abstract class Tweak
 public abstract class ToggleTweak : Tweak
 {
     /// <summary>
+    /// Whether the tweak is on until the user says otherwise. Tweaks are on by default; override
+    /// this only for one that should not run on every PC.
+    /// </summary>
+    public virtual bool OnByDefault => true;
+
+    /// <summary>
     /// Runs an action tweak the way a click on it would (own thread, result notification).
     /// Set by <see cref="TweakManager"/>; call it on the UI thread.
     /// </summary>
