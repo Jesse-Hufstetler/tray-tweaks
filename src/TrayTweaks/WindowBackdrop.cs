@@ -38,6 +38,11 @@ public static class WindowBackdrop
         var margins = new MARGINS();
         DwmExtendFrameIntoClientArea(handle, ref margins);
 
+        // The Settings window has no native frame (a framed window's invisible border would be
+        // glass too, spilling past the visible edge), so the rounded corners have to be asked for.
+        var round = DWMWCP_ROUND;
+        DwmSetWindowAttribute(handle, DWMWA_WINDOW_CORNER_PREFERENCE, ref round, sizeof(int));
+
         // Flags must be 0: with the usual 2 (use the gradient colour) this state renders black.
         var accent = new ACCENT_POLICY { AccentState = ACCENT_ENABLE_BLURBEHIND, AccentFlags = 0 };
         var size = Marshal.SizeOf<ACCENT_POLICY>();
@@ -65,6 +70,8 @@ public static class WindowBackdrop
 
     const int DWMWA_SYSTEMBACKDROP_TYPE = 38;
     const int DWMSBT_NONE = 1;
+    const int DWMWA_WINDOW_CORNER_PREFERENCE = 33;
+    const int DWMWCP_ROUND = 2;
     const int WCA_ACCENT_POLICY = 19;
     const int ACCENT_ENABLE_BLURBEHIND = 3;
 

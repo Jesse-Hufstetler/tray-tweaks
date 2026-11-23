@@ -39,6 +39,10 @@ public partial class SettingsWindow : Window
         Closed += (_, _) => tweaks.Changed -= Refresh;
     }
 
+    void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+    void Close_Click(object sender, RoutedEventArgs e) => Close();
+
     void RunAction_Click(object sender, RoutedEventArgs e) =>
         ((TweakRow)((FrameworkElement)sender).DataContext).Run();
 

@@ -5,7 +5,7 @@ namespace TrayTweaks.Mouse;
 /// <param name="Shifted">What Windows receives when it is pressed with G-Shift held; empty for the G-Shift button itself.</param>
 public sealed record MouseButton(int Number, string Label, string Sends, string Shifted)
 {
-    public string ShiftedLine => Shifted.Length == 0 ? "hold for the second layer" : $"G-Shift: {Shifted}";
+    public string ShiftedLine => Shifted.Length == 0 ? "hold for second layer" : $"G-Shift: {Shifted}";
 }
 
 /// <summary>
