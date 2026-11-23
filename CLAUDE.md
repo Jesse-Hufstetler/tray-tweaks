@@ -27,13 +27,13 @@ Jesse's personal Windows tray utility (WPF, .NET 10) that hosts small Windows tw
 ## Mouse buttons (Logitech G604)
 
 - The G604 is in onboard-memory mode, so the button mapping lives in the mouse. G HUB's `settings.db` only holds placeholder software profiles and does not show it. The true map has to come from G HUB's Onboard Memory Manager screen or from pressing each button.
-- The mouse has 16 assignable controls and two layers (default, and G-Shift held). The only profile Jesse uses is "Hybrid MF". Its map, read from Logitech Onboard Memory Manager screenshots on 2026-11-20:
+- The mouse has 16 assignable controls and two layers (default, and G-Shift held). The only profile Jesse uses is "Hybrid MF". Its map, read from Logitech Onboard Memory Manager screenshots on 2026-11-20 (the screenshots showed the three G-Shift media keys only as "Media key"; Jesse said on 2026-11-23 which they are):
 
   | Button | Default | With G-Shift held |
   |---|---|---|
   | 1 | Left click | Ctrl+= |
   | 2 | Right click | Ctrl+- |
-  | 3 | Middle click | Media key (which one not recorded) |
+  | 3 | Middle click | Mute |
   | 4 | F13 | F17 |
   | 5 | G-Shift | G-Shift |
   | 6 | Forward (Mouse 5, `XButton2`) | Back (Mouse 4, `XButton1`) |
@@ -44,8 +44,8 @@ Jesse's personal Windows tray utility (WPF, .NET 10) that hosts small Windows tw
   | 11 | F16 | F22 |
   | 12 | Tilt Left | F23 |
   | 13 | Tilt Right | F24 |
-  | 14 | Scroll Down | Media key (which one not recorded) |
-  | 15 | Scroll Up | Media key (which one not recorded) |
+  | 14 | Scroll Down | Volume down |
+  | 15 | Scroll Up | Volume up |
   | 16 | No Action | No Action |
 
 - Physical positions. Buttons 4 to 9 are the six thumb buttons, which have G4 to G9 printed on them; the number matches the label. Seen from the left side with the front of the mouse to the left, the top row is G9, G8, G7 and the bottom row is G6, G5, G4. So button 5 (G-Shift) is bottom centre, which is what Jesse said, and button 6 (Forward by factory default and in his profile) is bottom front. Buttons 1 to 3 are left, right and wheel click; 12 to 15 are the wheel tilts and scroll directions. Beside the left click, button 10 is the - button and button 11 is the + button (Jesse checked with Identify Button). Button 16 is unidentified (No Action on both layers). The number-to-label match is inferred from those two agreeing points and a review photo, not from Logitech documentation.

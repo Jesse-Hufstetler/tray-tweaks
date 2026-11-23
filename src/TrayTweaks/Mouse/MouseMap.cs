@@ -29,12 +29,12 @@ public static class G604Map
     [
         new(1, "Left click", "Left click", "Ctrl + ="),
         new(2, "Right click", "Right click", "Ctrl + -"),
-        new(3, "Wheel click", "Middle click", "Media key"),
+        new(3, "Wheel click", "Middle click", "Mute"),
         new(11, "+ button", "F16", "F22"),
         new(10, "- button", "F15", "F21"),
         new(12, "Wheel tilt left", "Tilt left", "F23"),
         new(13, "Wheel tilt right", "Tilt right", "F24"),
-        new(15, "Scroll up", "Scroll up", "Media key"),
-        new(14, "Scroll down", "Scroll down", "Media key"),
+        new(15, "Scroll up", "Scroll up", "Volume up"),
+        new(14, "Scroll down", "Scroll down", "Volume down"),
     ];
 }
