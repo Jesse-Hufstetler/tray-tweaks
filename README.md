@@ -34,6 +34,7 @@ It then shows up in the tray menu and Settings. A toggle's on/off state is saved
 ## Settings
 
 - On/off state: `%AppData%\TrayTweaks\settings.json`
+- Log: `%LocalAppData%\TrayTweaks\log.txt`. The app notes each start there (who it runs as, whether each saved password can be read) and anything that would otherwise fail silently. It never contains a password.
 - Passwords: text the app types for you is entered on the Passwords tab, where a saved value shows as dots until you click Show. It is kept in `%LocalAppData%\TrayTweaks\secrets.json`, each entry encrypted with Windows DPAPI for the current user. It is never in the source or in `settings.json`, and the file is useless on another PC or account. To add one, define a `SecretSlot` and list it in `SecretStore.Slots`.
 - The Settings window's background is blurred glass on Windows 11 22H2 or later. The blur relies on an undocumented Windows call, so a Windows update could turn it back into a plain background.
 - Start at sign-in: a Task Scheduler task named `TrayTweaks` (at sign-in of the current user, run with highest privileges). A Run-key entry doesn't work here, because Windows skips sign-in programs that need elevation. The task points at the exe that was running when the box was ticked; untick and tick again after moving the app.

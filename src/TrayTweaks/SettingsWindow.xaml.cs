@@ -120,6 +120,8 @@ public sealed class SecretRow(SecretSlot slot) : INotifyPropertyChanged
 {
     string _saved = SecretStore.Default.Get(slot.Id) ?? "";
     string? _draft;
+    // Saved, but by another Windows account or on another PC, so it can't be decrypted here.
+    bool _unreadable = SecretStore.Default.Has(slot.Id) && SecretStore.Default.Get(slot.Id) is null;
 
     public string Name => slot.Name;
     public string Description => slot.Description;
@@ -135,12 +137,13 @@ public sealed class SecretRow(SecretSlot slot) : INotifyPropertyChanged
         }
     }
 
-    public string Status => Draft != _saved ? "Unsaved" : _saved.Length == 0 ? "Not set" : "Saved";
+    public string Status => Draft != _saved ? "Unsaved" : _unreadable ? "Saved, but can't be read here" : _saved.Length == 0 ? "Not set" : "Saved";
 
     public void Save(string value)
     {
         SecretStore.Default.Set(slot.Id, value);
         _saved = value;
+        _unreadable = false;
         Draft = value;
     }
 
@@ -148,6 +151,7 @@ public sealed class SecretRow(SecretSlot slot) : INotifyPropertyChanged
     {
         SecretStore.Default.Remove(slot.Id);
         _saved = "";
+        _unreadable = false;
         Draft = "";
     }
 

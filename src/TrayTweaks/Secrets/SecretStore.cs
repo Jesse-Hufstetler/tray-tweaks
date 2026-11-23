@@ -39,6 +39,7 @@ public sealed class SecretStore(string filePath)
         }
         catch (Exception ex) when (ex is CryptographicException or FormatException)
         {
+            AppLog.Write($"Secret '{id}' is saved but could not be read: {ex.GetType().Name} 0x{ex.HResult:X8} {ex.Message.Trim()}");
             return null;
         }
     }
@@ -66,6 +67,7 @@ public sealed class SecretStore(string filePath)
         }
         catch (Exception ex) when (ex is IOException or JsonException or UnauthorizedAccessException)
         {
+            AppLog.Write($"The secrets file could not be loaded: {ex.GetType().Name} {ex.Message.Trim()}");
         }
         return [];
     }
