@@ -25,7 +25,7 @@ public sealed class BackButtonTweak(ActionTweak combineExplorerWindows) : Toggle
     public static readonly SecretSlot ConnectLogin = new(
         "connect-login",
         "Connect window login",
-        "With the Back button tweak on, pressing Back in a window with \"Connect\" in its title presses Tab, types this, then presses Enter three times.");
+        "Back button, in a window with \"Connect\" in its title: Tab, this text, Enter three times.");
 
     MouseHook? _hook;
 

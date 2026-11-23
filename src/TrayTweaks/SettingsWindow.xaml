@@ -204,7 +204,7 @@
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="4,6,4,4" TextElement.FontSize="12">
                     <TextBlock Style="{StaticResource OnGlass}" Margin="2,0,0,6"
-                               Text="Text that TrayTweaks types for you. It is stored encrypted on this PC only, under your Windows account, and can't be shown again after you save it." />
+                               Text="Text that TrayTweaks types for you. It is stored encrypted on this PC only, under your Windows account." />
                     <Border Style="{StaticResource DenseFrame}">
                         <ItemsControl x:Name="SecretList">
                             <ItemsControl.ItemTemplate>
@@ -216,14 +216,20 @@
                                                 <ColumnDefinition Width="Auto" />
                                             </Grid.ColumnDefinitions>
                                             <StackPanel VerticalAlignment="Center">
-                                                <TextBlock>
+                                                <TextBlock TextWrapping="Wrap">
                                                     <Run FontWeight="SemiBold" Text="{Binding Name, Mode=OneWay}" /><Run Text="   " /><Run Text="{Binding Status, Mode=OneWay}" Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                                                 </TextBlock>
                                                 <TextBlock Text="{Binding Description}" TextWrapping="Wrap"
                                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
                                             </StackPanel>
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
-                                                <PasswordBox Width="130" />
+                                            <!-- The dots box and the plain box share one spot; Show swaps them. -->
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0"
+                                                        Loaded="SecretEditor_Loaded">
+                                                <Grid Width="120">
+                                                    <PasswordBox PasswordChanged="SecretDots_Changed" />
+                                                    <TextBox Visibility="Collapsed" TextChanged="SecretPlain_Changed" />
+                                                </Grid>
+                                                <ToggleButton Content="Show" Click="SecretShow_Click" MinWidth="52" Margin="4,0,0,0" />
                                                 <Button Content="Save" Click="SaveSecret_Click" Margin="4,0,0,0" />
                                                 <Button Content="Remove" Click="RemoveSecret_Click" Margin="4,0,0,0" />
                                             </StackPanel>

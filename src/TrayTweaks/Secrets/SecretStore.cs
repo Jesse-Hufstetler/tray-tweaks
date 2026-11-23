@@ -21,7 +21,8 @@ public sealed class SecretStore(string filePath)
         Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "TrayTweaks", "secrets.json"));
 
     /// <summary>Every secret the app knows how to use. Add a slot here to get a row on the Passwords tab.</summary>
-    public static readonly IReadOnlyList<SecretSlot> Slots = [BackButtonTweak.ConnectLogin];
+    public static readonly IReadOnlyList<SecretSlot> Slots =
+        [BackButtonTweak.ConnectLogin, .. PasswordKeysTweak.Keys.Select(key => key.Slot)];
 
     static readonly byte[] Entropy = Encoding.UTF8.GetBytes("TrayTweaks.SecretStore");
 

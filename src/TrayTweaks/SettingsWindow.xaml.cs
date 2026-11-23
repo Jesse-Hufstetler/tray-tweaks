@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using TrayTweaks.Secrets;
 
 namespace TrayTweaks;
@@ -41,36 +42,113 @@ public partial class SettingsWindow : Window
     void RunAction_Click(object sender, RoutedEventArgs e) =>
         ((TweakRow)((FrameworkElement)sender).DataContext).Run();
 
-    void SaveSecret_Click(object sender, RoutedEventArgs e)
+    // The parts of one editor on the Passwords tab, found from any control inside it.
+    sealed record SecretEditor(PasswordBox Dots, TextBox Plain, ToggleButton Show, SecretRow Row)
     {
-        var buttons = (Panel)((FrameworkElement)sender).Parent;
-        var box = buttons.Children.OfType<PasswordBox>().Single();
-        if (box.Password.Length == 0)
-            return;
-        ((SecretRow)buttons.DataContext).Save(box.Password);
-        box.Clear();
+        public static SecretEditor Of(object sender)
+        {
+            var element = (FrameworkElement)sender;
+            while (element is not StackPanel { Orientation: Orientation.Horizontal })
+                element = (FrameworkElement)element.Parent;
+            var panel = (StackPanel)element;
+            var boxes = panel.Children.OfType<Grid>().Single();
+            return new(
+                boxes.Children.OfType<PasswordBox>().Single(),
+                boxes.Children.OfType<TextBox>().Single(),
+                panel.Children.OfType<ToggleButton>().Single(),
+                (SecretRow)panel.DataContext);
+        }
+
+        public string Text => Show.IsChecked == true ? Plain.Text : Dots.Password;
     }
 
-    void RemoveSecret_Click(object sender, RoutedEventArgs e) =>
-        ((SecretRow)((FrameworkElement)sender).DataContext).Remove();
+    // Runs again each time the tab is shown, so it restores what was being typed, not just what is saved.
+    void SecretEditor_Loaded(object sender, RoutedEventArgs e)
+    {
+        var editor = SecretEditor.Of(sender);
+        editor.Dots.Password = editor.Row.Draft;
+    }
+
+    void SecretDots_Changed(object sender, RoutedEventArgs e)
+    {
+        var editor = SecretEditor.Of(sender);
+        if (editor.Show.IsChecked != true)
+            editor.Row.Draft = editor.Dots.Password;
+    }
+
+    void SecretPlain_Changed(object sender, TextChangedEventArgs e)
+    {
+        var editor = SecretEditor.Of(sender);
+        if (editor.Show.IsChecked == true)
+            editor.Row.Draft = editor.Plain.Text;
+    }
+
+    void SecretShow_Click(object sender, RoutedEventArgs e)
+    {
+        var editor = SecretEditor.Of(sender);
+        var show = editor.Show.IsChecked == true;
+        if (show)
+            editor.Plain.Text = editor.Row.Draft;
+        else
+            editor.Dots.Password = editor.Row.Draft;
+        editor.Plain.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+        editor.Dots.Visibility = show ? Visibility.Collapsed : Visibility.Visible;
+        editor.Show.Content = show ? "Hide" : "Show";
+        if (!show)
+            editor.Plain.Clear();
+    }
+
+    void SaveSecret_Click(object sender, RoutedEventArgs e)
+    {
+        var editor = SecretEditor.Of(sender);
+        if (editor.Text.Length == 0)
+            editor.Row.Remove();
+        else
+            editor.Row.Save(editor.Text);
+    }
+
+    void RemoveSecret_Click(object sender, RoutedEventArgs e)
+    {
+        var editor = SecretEditor.Of(sender);
+        editor.Row.Remove();
+        editor.Dots.Clear();
+        editor.Plain.Clear();
+    }
 }
 
 public sealed class SecretRow(SecretSlot slot) : INotifyPropertyChanged
 {
+    string _saved = SecretStore.Default.Get(slot.Id) ?? "";
+    string? _draft;
+
     public string Name => slot.Name;
     public string Description => slot.Description;
-    public string Status => SecretStore.Default.Has(slot.Id) ? "Saved" : "Not set";
+
+    /// <summary>What is in the box right now, saved or not.</summary>
+    public string Draft
+    {
+        get => _draft ?? _saved;
+        set
+        {
+            _draft = value;
+            PropertyChanged?.Invoke(this, new(nameof(Status)));
+        }
+    }
+
+    public string Status => Draft != _saved ? "Unsaved" : _saved.Length == 0 ? "Not set" : "Saved";
 
     public void Save(string value)
     {
         SecretStore.Default.Set(slot.Id, value);
-        PropertyChanged?.Invoke(this, new(nameof(Status)));
+        _saved = value;
+        Draft = value;
     }
 
     public void Remove()
     {
         SecretStore.Default.Remove(slot.Id);
-        PropertyChanged?.Invoke(this, new(nameof(Status)));
+        _saved = "";
+        Draft = "";
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
