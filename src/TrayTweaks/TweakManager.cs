@@ -13,6 +13,7 @@ public sealed class TweakManager
         new ForwardButtonCloseTweak(),
         new BackButtonTweak(CombineExplorerWindows),
         new PasswordKeysTweak(),
+        new TimestampKeyTweak(),
         new KeepOutlookRunningTweak(),
     ];
 

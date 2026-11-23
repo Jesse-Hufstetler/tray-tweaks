@@ -7,10 +7,15 @@ public static class Keyboard
 {
     public const ushort Tab = 0x09;
     public const ushort Enter = 0x0D;
+    public const ushort Shift = 0x10;
     public const ushort Control = 0x11;
     public const ushort Alt = 0x12;
     public const ushort Home = 0x24;
+    public const ushort Right = 0x27;
+    public const ushort LeftWin = 0x5B;
+    public const ushort RightWin = 0x5C;
     public const ushort F4 = 0x73;
+    const ushort Unassigned = 0xE8;
 
     public static ushort Letter(char letter) => char.ToUpperInvariant(letter);
 
@@ -45,6 +50,22 @@ public static class Keyboard
             SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<INPUT>());
             Thread.Sleep(10);
         }
+    }
+
+    /// <summary>
+    /// Lets go of the Windows keys if they are held, so that what is typed next is not taken as a
+    /// Win shortcut. A key that does nothing is pressed first: Windows opens the Start menu when Win
+    /// is released with no other key pressed since it went down, and a key swallowed by a hook does
+    /// not count. Win is not pressed again afterwards: once released this way, Windows can't say
+    /// whether it is still physically down.
+    /// </summary>
+    public static void ReleaseWin()
+    {
+        var held = new[] { LeftWin, RightWin }.Where(key => GetAsyncKeyState(key) < 0).ToArray();
+        if (held.Length == 0)
+            return;
+        INPUT[] inputs = [Key(Unassigned, up: false), Key(Unassigned, up: true), .. held.Select(key => Key(key, up: true))];
+        SendInput((uint)inputs.Length, inputs, Marshal.SizeOf<INPUT>());
     }
 
     static INPUT Character(char character, bool up) => new()
@@ -98,6 +119,9 @@ public static class Keyboard
         public uint time;
         public UIntPtr dwExtraInfo;
     }
+
+    [DllImport("user32.dll")]
+    static extern short GetAsyncKeyState(int key);
 
     [DllImport("user32.dll", SetLastError = true)]
     static extern uint SendInput(uint cInputs, INPUT[] pInputs, int cbSize);
